@@ -1,0 +1,64 @@
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.34.2.
+--
+-- see: https://github.com/sol/hpack
+
+name:           dodge-the-creeps
+version:        0.0.0.0
+homepage:       https://github.com/heitor-lassarote/dodge-the-creeps#readme
+bug-reports:    https://github.com/heitor-lassarote/dodge-the-creeps/issues
+author:         Heitor Toledo Lassarote de Paula
+maintainer:     heitortoledo@hotmail.com
+copyright:      Heitor Toledo Lassarote de Paula 2021
+license:        BSD3
+license-file:   LICENSE
+build-type:     Simple
+extra-source-files:
+    ChangeLog.md
+    README.md
+
+foreign-library dodge-the-creeps
+  type: native-shared
+  other-modules: FLib
+  hs-source-dirs: ffi/flib
+  c-sources: ffi/cbits/flib.c
+  build-depends:
+      base >= 4.12 && <5
+    , godot-haskell
+    , dodge-the-creeps
+    , text
+  default-language: Haskell2010
+
+source-repository head
+  type: git
+  location: https://github.com/heitor-lassarote/dodge-the-creeps
+
+library
+  exposed-modules:
+      Lib
+  other-modules:
+      Game.Player
+      Project.Requirements
+      Project.Scenes
+      Project.Scenes.Main
+      Project.Scenes.Player
+      Project.Support
+      Paths_dodge_the_creeps
+  hs-source-dirs:
+      src
+      game
+  default-extensions: AllowAmbiguousTypes BlockArguments DataKinds FlexibleContexts FlexibleInstances FunctionalDependencies MultiParamTypeClasses OverloadedStrings ScopedTypeVariables TemplateHaskell TupleSections TypeApplications TypeFamilies
+  ghc-options: -Wall -fwarn-unused-do-bind -fwarn-tabs -fwarn-incomplete-uni-patterns -fwarn-incomplete-record-updates -O2
+  build-depends:
+      base >=4.12 && <5
+    , containers
+    , godot-haskell
+    , lens
+    , linear
+    , stm
+    , template-haskell
+    , text
+    , th-abstraction
+    , vector
+  default-language: Haskell2010

@@ -1,0 +1,11 @@
+[general]
+
+singleton=false
+load_once=true
+symbol_prefix="godot_"
+reloadable=true
+
+[entry]
+
+X11.64="res://lib/libdodge-the-creeps.so"
+OSX.64="res://lib/libdodge-the-creeps.dylib"

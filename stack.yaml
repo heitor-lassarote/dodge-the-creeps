@@ -1,0 +1,21 @@
+resolver: nightly-2021-02-06
+
+packages:
+- .
+
+extra-deps:
+- git: https://github.com/SimulaVR/godot-haskell
+  commit: e8f2c45f1b9cc2f0586ebdc9ec6002c8c2d384ae
+
+require-stack-version: ">=1.8"
+
+nix:
+  enable: false
+  pure: true
+  packages: []
+  shell-file: stack-shell.nix
+  nix-shell-options: []
+  path: []
+  add-gc-roots: false
+
+
