@@ -16,6 +16,7 @@ dependencies:
   - godot-haskell
   - lens
   - linear
+  - random
   - stm
   - template-haskell
   - text
@@ -37,7 +38,9 @@ library:
     - FlexibleContexts
     - FlexibleInstances
     - FunctionalDependencies
+    - ImportQualifiedPost
     - MultiParamTypeClasses
+    - MultiWayIf
     - OverloadedStrings
     - ScopedTypeVariables
     - TemplateHaskell
@@ -45,7 +48,7 @@ library:
     - TypeApplications
     - TypeFamilies
 
-  ghc-options: -Wall -fwarn-unused-do-bind -fwarn-tabs -fwarn-incomplete-uni-patterns -fwarn-incomplete-record-updates -O2
+  ghc-options: -Wall -Wno-orphans -fwarn-unused-do-bind -fwarn-tabs -fwarn-incomplete-uni-patterns -fwarn-incomplete-record-updates -O2
 
 verbatim: |
 

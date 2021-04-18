@@ -12,7 +12,11 @@ import Godot
 import GHC.TypeLits
 
 import Godot.Core.Node()
+import Godot.Core.Path2D()
+import Godot.Core.PathFollow2D()
+import Godot.Core.Timer()
 import Godot.Core.PackedScene()
+import Godot.Core.Position2D()
 
 instance SceneResourcePath "Main" where
   sceneResourcePath = "res://Main.tscn"
@@ -28,8 +32,53 @@ instance SceneNode        "Main" "Main" where
   type SceneNodeIsHaskell "Main" "Main" = 'Just '("Main", "Main")
 
 
+instance SceneNode        "Main" "MobPath" where
+  type SceneNodeType      "Main" "MobPath" = Path2D
+  type SceneNodeName      "Main" "MobPath" = "MobPath"
+  type SceneNodeIsHaskell "Main" "MobPath" = 'Nothing
+
+
+instance SceneNode        "Main" "MobPath/MobSpawnLocation" where
+  type SceneNodeType      "Main" "MobPath/MobSpawnLocation" = PathFollow2D
+  type SceneNodeName      "Main" "MobPath/MobSpawnLocation" = "MobSpawnLocation"
+  type SceneNodeIsHaskell "Main" "MobPath/MobSpawnLocation" = 'Nothing
+
+
+instance SceneNode        "Main" "MobTimer" where
+  type SceneNodeType      "Main" "MobTimer" = Timer
+  type SceneNodeName      "Main" "MobTimer" = "MobTimer"
+  type SceneNodeIsHaskell "Main" "MobTimer" = 'Nothing
+
+
 instance SceneNode        "Main" "Player" where
   type SceneNodeType      "Main" "Player" = PackedScene' "Player"
   type SceneNodeName      "Main" "Player" = "Player"
   type SceneNodeIsHaskell "Main" "Player" = 'Just '("Player", "Player")
+
+
+instance SceneNode        "Main" "ScoreTimer" where
+  type SceneNodeType      "Main" "ScoreTimer" = Timer
+  type SceneNodeName      "Main" "ScoreTimer" = "ScoreTimer"
+  type SceneNodeIsHaskell "Main" "ScoreTimer" = 'Nothing
+
+
+instance SceneNode        "Main" "StartPosition" where
+  type SceneNodeType      "Main" "StartPosition" = Position2D
+  type SceneNodeName      "Main" "StartPosition" = "StartPosition"
+  type SceneNodeIsHaskell "Main" "StartPosition" = 'Nothing
+
+
+instance SceneNode        "Main" "StartTimer" where
+  type SceneNodeType      "Main" "StartTimer" = Timer
+  type SceneNodeName      "Main" "StartTimer" = "StartTimer"
+  type SceneNodeIsHaskell "Main" "StartTimer" = 'Nothing
+
+
+instance SceneConnection "Main" "StartTimer" "timeout" "Main" "_on_StartTimer_timeout"
+
+
+instance SceneConnection "Main" "ScoreTimer" "timeout" "Main" "_on_ScoreTimer_timeout"
+
+
+instance SceneConnection "Main" "MobTimer" "timeout" "Main" "_on_MobTimer_timeout"
 

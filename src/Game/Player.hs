@@ -1,17 +1,19 @@
 module Game.Player where
 
+import Prelude hiding (show)
+
 import Data.Bool
 import Control.Lens
 import Control.Monad
 import Godot
 import Godot.Core.AnimatedSprite
 import Godot.Core.CanvasItem
+import Godot.Core.CollisionShape2D
 import Godot.Core.Input
 import Godot.Core.Node2D
 import Godot.Core.Object
 import Godot.Gdnative
 import Linear
-import Linear.V2
 
 import Project.Support
 import Project.Scenes.Player ()
@@ -22,11 +24,16 @@ data Player = Player
   , _pScreenSize :: MVar (V2 Float)
   }
 
+instance NodeSignal Player "hit" '[]
+
 instance NodeInit Player where
   init base = Player base <$> newMVar 400 <*> newMVar zero
 
-instance NodeProperty Player "Player" Float 'False where
+instance NodeProperty Player "Speed" Float 'False where
   nodeProperty = createMVarProperty' "Player" _pSpeed (Right 400)
+
+instance NodeMethod Player "_start" '[Vector2] (IO ()) where
+  nodeMethod = start
 
 instance NodeMethod Player "_ready" '[] (IO ()) where
   nodeMethod = ready
@@ -34,10 +41,22 @@ instance NodeMethod Player "_ready" '[] (IO ()) where
 instance NodeMethod Player "_process" '[Float] (IO ()) where
   nodeMethod = process
 
+instance NodeMethod Player "_on_Player_body_entered" '[Node] (IO ()) where
+  nodeMethod this _body = do
+    hide this
+    emit_signal' @"hit" this []
+
+start :: Player -> Vector2 -> IO ()
+start this pos = do
+  set_position this pos
+  show this
+  getNode' @"CollisionShape2D" this >>= (`set_disabled` False)
+
 ready :: Player -> IO ()
 ready this = do
   screenRect <- fromLowLevel =<< get_viewport_rect this
   void $ swapMVar (_pScreenSize this) (screenRect ^. _y)
+  hide this
 
 class Clamp a where
   clamp :: a -> a -> a -> a
@@ -76,6 +95,23 @@ process this delta = do
   screenSize <- readMVar $ _pScreenSize this
   let newPos = clamp (actualPos + velocity' ^* delta) zero screenSize
   set_position this =<< toLowLevel newPos
+
+  if
+    | velocity' ^. _x /= 0 -> do
+      set_animation animatedSprite =<< toLowLevel "walk"
+      set_flip_v animatedSprite False
+      set_flip_h animatedSprite (velocity' ^. _x < 0)
+    | velocity' ^. _y /= 0 -> do
+      set_animation animatedSprite =<< toLowLevel "up"
+      set_flip_v animatedSprite (velocity' ^. _y > 0)
+    | otherwise -> pure ()
+
+onPlayerBodyEntered :: Player -> Node -> IO ()
+onPlayerBodyEntered this _body = do
+  hide this
+  getNode' @"CollisionShape2D" this >>= \cs2d -> do
+    disabled <- toLowLevel "disabled"
+    call_deferred cs2d disabled [VariantBool True]
 
 setupNode ''Player "Player" "Player"
 deriveBase ''Player

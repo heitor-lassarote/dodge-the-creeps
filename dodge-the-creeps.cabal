@@ -38,24 +38,28 @@ library
   exposed-modules:
       Lib
   other-modules:
+      Game.Main
+      Game.Mob
       Game.Player
       Project.Requirements
       Project.Scenes
       Project.Scenes.Main
+      Project.Scenes.Mob
       Project.Scenes.Player
       Project.Support
       Paths_dodge_the_creeps
   hs-source-dirs:
       src
       game
-  default-extensions: AllowAmbiguousTypes BlockArguments DataKinds FlexibleContexts FlexibleInstances FunctionalDependencies MultiParamTypeClasses OverloadedStrings ScopedTypeVariables TemplateHaskell TupleSections TypeApplications TypeFamilies
-  ghc-options: -Wall -fwarn-unused-do-bind -fwarn-tabs -fwarn-incomplete-uni-patterns -fwarn-incomplete-record-updates -O2
+  default-extensions: AllowAmbiguousTypes BlockArguments DataKinds FlexibleContexts FlexibleInstances FunctionalDependencies ImportQualifiedPost MultiParamTypeClasses MultiWayIf OverloadedStrings ScopedTypeVariables TemplateHaskell TupleSections TypeApplications TypeFamilies
+  ghc-options: -Wall -Wno-orphans -fwarn-unused-do-bind -fwarn-tabs -fwarn-incomplete-uni-patterns -fwarn-incomplete-record-updates -O2
   build-depends:
       base >=4.12 && <5
     , containers
     , godot-haskell
     , lens
     , linear
+    , random
     , stm
     , template-haskell
     , text

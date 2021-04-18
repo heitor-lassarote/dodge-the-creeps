@@ -3,4 +3,4 @@
 module Project.Requirements where
 import Project.Support
 
-type Nodes = '[OneResourceNode "Main" "Main", OneResourceNode "Player" "Player"]
+type Nodes = '[OneResourceNode "Main" "Main", OneResourceNode "Mob" "Mob", OneResourceNode "Player" "Player"]
