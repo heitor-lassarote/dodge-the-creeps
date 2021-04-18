@@ -42,9 +42,7 @@ instance NodeMethod Player "_process" '[Float] (IO ()) where
   nodeMethod = process
 
 instance NodeMethod Player "_on_Player_body_entered" '[Node] (IO ()) where
-  nodeMethod this _body = do
-    hide this
-    emit_signal' @"hit" this []
+  nodeMethod = onPlayerBodyEntered
 
 start :: Player -> Vector2 -> IO ()
 start this pos = do
@@ -109,6 +107,7 @@ process this delta = do
 onPlayerBodyEntered :: Player -> Node -> IO ()
 onPlayerBodyEntered this _body = do
   hide this
+  emit_signal' @"hit" this []
   getNode' @"CollisionShape2D" this >>= \cs2d -> do
     disabled <- toLowLevel "disabled"
     call_deferred cs2d disabled [VariantBool True]

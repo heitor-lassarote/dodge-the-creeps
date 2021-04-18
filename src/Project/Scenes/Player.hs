@@ -40,3 +40,6 @@ instance SceneNode        "Player" "Player" where
   type SceneNodeName      "Player" "Player" = "Player"
   type SceneNodeIsHaskell "Player" "Player" = 'Just '("Player", "Player")
 
+
+instance SceneConnection "Player" "Player" "body_entered" "Player" "_on_Player_body_entered"
+

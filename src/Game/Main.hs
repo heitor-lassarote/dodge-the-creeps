@@ -14,6 +14,7 @@ import Godot.Gdnative (godot_vector2_rotated)
 import Linear.V2
 import System.Random
 
+import Game.HUD (showGameOver, showMessage, updateScore)
 import Game.Mob (Mob (_mMaxSpeed, _mMinSpeed))
 import Game.Player ()
 import Project.Support
@@ -31,9 +32,6 @@ instance NodeInit Main where
 instance NodeProperty Main "PackedScene" PackedScene 'False where
   nodeProperty = createMVarProperty' "PackedScene" _mMob (Left VariantTypeObject)
 
-instance NodeMethod Main "_ready" '[] (IO ()) where
-  nodeMethod = ready
-
 instance NodeMethod Main "game_over" '[] (IO ()) where
   nodeMethod = gameOver
 
@@ -49,19 +47,16 @@ instance NodeMethod Main "_on_ScoreTimer_timeout" '[] (IO ()) where
 instance NodeMethod Main "_on_MobTimer_timeout" '[] (IO ()) where
   nodeMethod = onMobTimerTimeout
 
-ready :: Main -> IO ()
-ready = newGame
-
 gameOver :: Main -> IO ()
 gameOver this = do
   getNode' @"MobTimer"   this >>= Timer.stop
   getNode' @"ScoreTimer" this >>= Timer.stop
+  getNodeNativeScript' @"HUD" this >>= showGameOver
 
 newGame :: Main -> IO ()
 newGame this = do
   void $ swapMVar (_mScore this) 0
 
-  --player <- getNode' @"Player" this
   startPosition <- getNode' @"StartPosition" this
   position <- get_position startPosition
   void $ join $ call
@@ -71,13 +66,20 @@ newGame this = do
 
   getNode' @"StartTimer" this >>= (`Timer.start` Nothing)
 
+  hud <- getNodeNativeScript' @"HUD" this
+  updateScore hud 0
+  showMessage hud =<< toLowLevel "Get Ready!"
+
 onStartTimerTimeout :: Main -> IO ()
 onStartTimerTimeout this = do
   getNode' @"MobTimer"   this >>= (`Timer.start` Nothing)
   getNode' @"ScoreTimer" this >>= (`Timer.start` Nothing)
 
 onScoreTimerTimeout :: Main -> IO ()
-onScoreTimerTimeout this = modifyMVar_ (_mScore this) (pure . (+ 1))
+onScoreTimerTimeout this = do
+  modifyMVar_ (_mScore this) (pure . (+ 1))
+  hud <- getNodeNativeScript' @"HUD" this
+  updateScore hud =<< readMVar (_mScore this)
 
 onMobTimerTimeout :: Main -> IO ()
 onMobTimerTimeout this = do
@@ -89,7 +91,7 @@ onMobTimerTimeout this = do
   mobInstance :: Mob <-
     readMVar (_mMob this)
     >>= (`instance'` Just 0)
-    >>= asNativeScript @Mob . upcast
+    >>= asNativeScript . upcast
     >>= maybe (error "Couldn't cast mob to NativeScript") pure
   add_child this (upcast mobInstance) (Just False)
 

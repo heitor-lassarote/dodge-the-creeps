@@ -11,11 +11,11 @@ import Project.Support
 import Godot
 import GHC.TypeLits
 
+import Godot.Core.PackedScene()
 import Godot.Core.Node()
 import Godot.Core.Path2D()
 import Godot.Core.PathFollow2D()
 import Godot.Core.Timer()
-import Godot.Core.PackedScene()
 import Godot.Core.Position2D()
 
 instance SceneResourcePath "Main" where
@@ -24,6 +24,12 @@ instance SceneResourcePath "Main" where
 
 instance SceneRoot "Main" where
   type SceneRootNode "Main" = "Main"
+
+
+instance SceneNode        "Main" "HUD" where
+  type SceneNodeType      "Main" "HUD" = PackedScene' "HUD"
+  type SceneNodeName      "Main" "HUD" = "HUD"
+  type SceneNodeIsHaskell "Main" "HUD" = 'Just '("HUD", "HUD")
 
 
 instance SceneNode        "Main" "Main" where
@@ -74,6 +80,9 @@ instance SceneNode        "Main" "StartTimer" where
   type SceneNodeIsHaskell "Main" "StartTimer" = 'Nothing
 
 
+instance SceneConnection "Main" "HUD" "start_game" "Main" "new_game"
+
+
 instance SceneConnection "Main" "StartTimer" "timeout" "Main" "_on_StartTimer_timeout"
 
 
@@ -81,4 +90,7 @@ instance SceneConnection "Main" "ScoreTimer" "timeout" "Main" "_on_ScoreTimer_ti
 
 
 instance SceneConnection "Main" "MobTimer" "timeout" "Main" "_on_MobTimer_timeout"
+
+
+instance SceneConnection "Main" "Player" "hit" "Main" "game_over"
 

@@ -38,11 +38,13 @@ library
   exposed-modules:
       Lib
   other-modules:
+      Game.HUD
       Game.Main
       Game.Mob
       Game.Player
       Project.Requirements
       Project.Scenes
+      Project.Scenes.HUD
       Project.Scenes.Main
       Project.Scenes.Mob
       Project.Scenes.Player
