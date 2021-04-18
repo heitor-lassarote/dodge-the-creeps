@@ -11,6 +11,8 @@ import Project.Support
 import Godot
 import GHC.TypeLits
 
+import Godot.Core.ColorRect()
+import Godot.Core.AudioStreamPlayer()
 import Godot.Core.PackedScene()
 import Godot.Core.Node()
 import Godot.Core.Path2D()
@@ -24,6 +26,18 @@ instance SceneResourcePath "Main" where
 
 instance SceneRoot "Main" where
   type SceneRootNode "Main" = "Main"
+
+
+instance SceneNode        "Main" "ColorRect" where
+  type SceneNodeType      "Main" "ColorRect" = ColorRect
+  type SceneNodeName      "Main" "ColorRect" = "ColorRect"
+  type SceneNodeIsHaskell "Main" "ColorRect" = 'Nothing
+
+
+instance SceneNode        "Main" "DeathSound" where
+  type SceneNodeType      "Main" "DeathSound" = AudioStreamPlayer
+  type SceneNodeName      "Main" "DeathSound" = "DeathSound"
+  type SceneNodeIsHaskell "Main" "DeathSound" = 'Nothing
 
 
 instance SceneNode        "Main" "HUD" where
@@ -54,6 +68,12 @@ instance SceneNode        "Main" "MobTimer" where
   type SceneNodeType      "Main" "MobTimer" = Timer
   type SceneNodeName      "Main" "MobTimer" = "MobTimer"
   type SceneNodeIsHaskell "Main" "MobTimer" = 'Nothing
+
+
+instance SceneNode        "Main" "Music" where
+  type SceneNodeType      "Main" "Music" = AudioStreamPlayer
+  type SceneNodeName      "Main" "Music" = "Music"
+  type SceneNodeIsHaskell "Main" "Music" = 'Nothing
 
 
 instance SceneNode        "Main" "Player" where

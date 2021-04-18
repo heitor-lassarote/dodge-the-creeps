@@ -50,10 +50,9 @@ showGameOver this = do
     set_text message =<< toLowLevel "Dodge the\nCreeps!"
     CanvasItem.show message
 
-    --timer <- get_tree this'
-    --  >>= (\sceneTree -> create_timer sceneTree 1 Nothing)
-    --await this' timer "timeout" $ const $ getNode' @"StartButton" this' >>= CanvasItem.show
-    getNode' @"StartButton" this' >>= CanvasItem.show
+    timer <- get_tree this'
+      >>= (\sceneTree -> create_timer sceneTree 1 Nothing)
+    await this' timer "timeout" $ const $ getNode' @"StartButton" this' >>= CanvasItem.show
 
 updateScore :: HUD -> Int -> IO ()
 updateScore this score = do

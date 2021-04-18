@@ -3,12 +3,14 @@ module Game.Main where
 import Control.Monad (join, void)
 import Foreign.C.Types (CFloat (..))
 import Godot
-import Godot.Core.Node (add_child)
+import Godot.Core.AudioStreamPlayer qualified as AudioStreamPlayer (play, stop)
+import Godot.Core.Node (add_child, get_tree)
 import Godot.Core.Node2D
 import Godot.Core.Object
 import Godot.Core.PackedScene (instance')
 import Godot.Core.PathFollow2D (set_offset)
 import Godot.Core.RigidBody2D (set_linear_velocity)
+import Godot.Core.SceneTree (call_group)
 import Godot.Core.Timer qualified as Timer (start, stop)
 import Godot.Gdnative (godot_vector2_rotated)
 import Linear.V2
@@ -52,6 +54,13 @@ gameOver this = do
   getNode' @"MobTimer"   this >>= Timer.stop
   getNode' @"ScoreTimer" this >>= Timer.stop
   getNodeNativeScript' @"HUD" this >>= showGameOver
+  void $ get_tree this >>= \tree -> do
+    mobs <- toLowLevel "mobs"
+    queue <- toLowLevel "queue_free"
+    call_group tree mobs queue []
+
+  getNode' @"Music" this >>= AudioStreamPlayer.stop
+  getNode' @"DeathSound" this >>= (`AudioStreamPlayer.play` Nothing)
 
 newGame :: Main -> IO ()
 newGame this = do
@@ -69,6 +78,8 @@ newGame this = do
   hud <- getNodeNativeScript' @"HUD" this
   updateScore hud 0
   showMessage hud =<< toLowLevel "Get Ready!"
+
+  getNode' @"Music" this >>= (`AudioStreamPlayer.play` Nothing)
 
 onStartTimerTimeout :: Main -> IO ()
 onStartTimerTimeout this = do
